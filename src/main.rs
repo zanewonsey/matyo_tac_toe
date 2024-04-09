@@ -39,7 +39,7 @@ impl Application<'_> {
         }
     }
 
-    fn get_cell_at(self, column: usize, row: usize) -> Cell_Type{
+    fn get_cell_at(&self, column: usize, row: usize) -> Cell_Type {
         match self.game_board.index(column).index(row).celltype {
             Cell_Type::Empty => Cell_Type::Empty,
             Cell_Type::Circle => Cell_Type::Circle,
@@ -56,50 +56,23 @@ impl App for Application<'_> {
 
         CentralPanel::default().show(ctx, |ui|{
             egui::Grid::new("GameTable").show(ui, |ui| {
-                
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked1");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.circle_image)).clicked() {
-                    println!("clicked2");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.cross_image)).clicked() {
-                    println!("clicked3");
-                };
-                ui.end_row();
-            
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked4");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked5");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked6");
-                };
-                ui.end_row();
 
-                if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(egui::Image::clone(&self.cross_image))).clicked() {
-                    println!("696969")
+                for (row, cells_in_row) in self.game_board.iter().enumerate() {
+                    for (column, _cell) in cells_in_row.iter().enumerate() {
+                        let image_of_cell_type = match self.get_cell_at(column, row) {
+                            Cell_Type::Empty  => egui::Image::clone(&self.empty_image),
+                            Cell_Type::Circle => egui::Image::clone(&self.circle_image),
+                            Cell_Type::Cross  => egui::Image::clone(&self.cross_image)
+                        };
+
+                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_cell_type)).clicked() {
+                            println!("Cell row {} column {}", row,column)
+                        }
+                    }
+                    ui.end_row();
                 }
-
-
-                let response = ui.allocate_response(egui::vec2(100.0, 200.0), egui::Sense::click());
-                if response.clicked() { println!("clicked69") }
-                ui.painter().rect_stroke(response.rect, 0.0, (1.0, egui::Color32::WHITE));
-            
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked7");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked8");
-                };
-                if ui.add_sized([180.0, 180.0],egui::Image::clone(&self.empty_image)).clicked() {
-                    println!("clicked9");
-                };
-                ui.end_row();
-            });
-        });
+            }); // </Grid>
+        }); // </CentralPanel>
     }
 }
 
