@@ -1,20 +1,20 @@
 use std::ops::Index;
-
 use eframe::{egui::CentralPanel, App, NativeOptions};
 
-enum Cell_Type {
+enum CellType {
     Empty,
     Circle,
     Cross
 }
-struct Game_Cell {
-    celltype: Cell_Type
+
+struct GameCell {
+    pub celltype: CellType
 }
 
-impl Game_Cell {
+impl GameCell {
     fn new() -> Self{
         Self {
-            celltype: Cell_Type::Empty
+            celltype: CellType::Empty
         }
     }
 }
@@ -23,7 +23,7 @@ struct Application<'a> {
     empty_image: egui::Image<'a>,
     circle_image: egui::Image<'a>,
     cross_image: egui::Image<'a>,
-    game_board: [[Game_Cell; 3]; 3]
+    pub game_board: [[GameCell; 3]; 3]
 }
 
 impl Application<'_> {
@@ -33,18 +33,22 @@ impl Application<'_> {
             empty_image:  egui::Image::new(egui::include_image!("../Empty.png")),
             circle_image: egui::Image::new(egui::include_image!("../Circle.png")),
             cross_image:  egui::Image::new(egui::include_image!("../CrossX.png")),
-            game_board: [[Game_Cell::new(), Game_Cell::new(), Game_Cell::new()],
-                         [Game_Cell::new(), Game_Cell::new(), Game_Cell::new()],
-                         [Game_Cell::new(), Game_Cell::new(), Game_Cell::new()]]
+            game_board: [[GameCell::new(), GameCell::new(), GameCell::new()],
+                         [GameCell::new(), GameCell::new(), GameCell::new()],
+                         [GameCell::new(), GameCell::new(), GameCell::new()]]
         }
     }
 
-    fn get_cell_at(&self, column: usize, row: usize) -> Cell_Type {
+    fn get_cell_at(&self, column: usize, row: usize) -> CellType {
         match self.game_board.index(row).index(column).celltype {
-            Cell_Type::Empty => Cell_Type::Empty,
-            Cell_Type::Circle => Cell_Type::Circle,
-            Cell_Type::Cross => Cell_Type::Cross,
+            CellType::Empty => CellType::Empty,
+            CellType::Circle => CellType::Circle,
+            CellType::Cross => CellType::Cross,
         }
+    }
+
+    fn update_cell_at(&mut self, column: usize, row: usize, cell_type: CellType) {
+        self.game_board[column][row].celltype = cell_type;
     }
 }
 
@@ -56,21 +60,31 @@ impl App for Application<'_> {
 
         CentralPanel::default().show(ctx, |ui|{
             egui::Grid::new("GameTable").show(ui, |ui| {
+                
+                // This probably doesn't need to be a Vec
+                let mut cells_to_update: Vec<(usize, usize)> = Vec::new();
 
                 for (row, cells_in_row) in self.game_board.iter().enumerate() {
+
                     for (column, _cell) in cells_in_row.iter().enumerate() {
-                        let image_of_cell_type = match self.get_cell_at(column, row) {
-                            Cell_Type::Empty  => egui::Image::clone(&self.empty_image),
-                            Cell_Type::Circle => egui::Image::clone(&self.circle_image),
-                            Cell_Type::Cross  => egui::Image::clone(&self.cross_image)
+                        let image_of_CellType = match self.get_cell_at(column, row) {
+                            CellType::Empty  => egui::Image::clone(&self.empty_image),
+                            CellType::Circle => egui::Image::clone(&self.circle_image),
+                            CellType::Cross  => egui::Image::clone(&self.cross_image)
                         };
 
-                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_cell_type)).clicked() {
-                            println!("Cell row {} column {}", row,column)
+                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_CellType)).clicked() {
+                            cells_to_update.push((row, column));
+                            println!("Cell row {} column {}", row, column)
                         }
                     }
                     ui.end_row();
                 }
+
+                for cell in cells_to_update {
+                    self.update_cell_at(cell.0, cell.1, CellType::Circle);
+                }
+
             }); // </Grid>
         }); // </CentralPanel>
     }
