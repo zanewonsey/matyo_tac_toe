@@ -40,7 +40,7 @@ impl Application<'_> {
     }
 
     fn get_cell_at(&self, column: usize, row: usize) -> Cell_Type {
-        match self.game_board.index(column).index(row).celltype {
+        match self.game_board.index(row).index(column).celltype {
             Cell_Type::Empty => Cell_Type::Empty,
             Cell_Type::Circle => Cell_Type::Circle,
             Cell_Type::Cross => Cell_Type::Cross,
