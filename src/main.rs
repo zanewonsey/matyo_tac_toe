@@ -27,7 +27,7 @@ struct Application<'a> {
 }
 
 impl Application<'_> {
-    fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         println!("doesthis run");
         Self {
             empty_image:  egui::Image::new(egui::include_image!("../Empty.png")),
@@ -67,13 +67,13 @@ impl App for Application<'_> {
                 for (row, cells_in_row) in self.game_board.iter().enumerate() {
 
                     for (column, _cell) in cells_in_row.iter().enumerate() {
-                        let image_of_CellType = match self.get_cell_at(column, row) {
+                        let image_of_celltype = match self.get_cell_at(column, row) {
                             CellType::Empty  => egui::Image::clone(&self.empty_image),
                             CellType::Circle => egui::Image::clone(&self.circle_image),
                             CellType::Cross  => egui::Image::clone(&self.cross_image)
                         };
 
-                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_CellType)).clicked() {
+                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
                             cells_to_update.push((row, column));
                             println!("Cell row {} column {}", row, column)
                         }
