@@ -168,6 +168,13 @@ impl App for Application<'_> {
                 }
 
                 let win_state = self.check_board_for_win();
+                if win_state.0 {
+                    match win_state.1 {
+                        CellType::Empty => todo!(),
+                        CellType::Circle => println!("Circle wins"),
+                        CellType::Cross => println!("Cross wins"),
+                    }
+                }
 
             }); // </Grid>
         }); // </CentralPanel>
