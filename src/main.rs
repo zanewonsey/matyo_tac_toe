@@ -1,5 +1,6 @@
 use std::ops::Index;
 use eframe::{egui::CentralPanel, App, NativeOptions};
+use egui::viewport;
 
 #[derive(PartialEq)]
 enum CellType {
@@ -193,15 +194,34 @@ impl App for Application<'_> {
 }
 
 fn main() {
-    
-    //let app = Application{
-    //    counter: 0
-    //};
-    let mut win_option = NativeOptions::default();
-    win_option.centered = true;
-    //win_option.window_builder = WindowBuilderHook::new();
+    let vp = egui::ViewportBuilder::default()
+        .with_resizable(false);
+
+    let options = eframe::NativeOptions {
+        viewport: vp,
+        vsync: true,
+        multisampling: 0,
+        depth_buffer: 0,
+        stencil_buffer: 0,
+        hardware_acceleration: todo!(),
+        renderer: eframe::Renderer::Glow,
+        follow_system_theme: todo!(),
+        default_theme: todo!(),
+        run_and_return: todo!(),
+        event_loop_builder: todo!(),
+        window_builder: todo!(),
+        shader_version: todo!(),
+        centered: todo!(),
+        persist_window: todo!(),
+    };
+
+
+
+    //let options = eframe::NativeOptions::default();
+    //options.viewport.with_resizable(false);
+
     let _ = eframe::run_native("matyo tac toe",
-        win_option,
+    options,
         Box::new(
             |app|
             Box::new(Application::new(app)))
