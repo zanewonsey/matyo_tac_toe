@@ -138,45 +138,51 @@ impl App for Application<'_> {
         egui_extras::install_image_loaders(ctx);
 
         CentralPanel::default().show(ctx, |ui|{
-            egui::Grid::new("GameTable").show(ui, |ui| {
+            let win_state = self.check_board_for_win();
+            if win_state.0 {
+                match win_state.1 {
+                    CellType::Empty => todo!(),
+                    CellType::Circle => {
+                        println!("Circle wins");
+                        ui.add_sized([500.0, 500.0],egui::Image::clone(&self.circle_image));
+                    },
+                    CellType::Cross => {
+                        println!("Cross wins");
+                        ui.add_sized([500.0, 500.0],egui::Image::clone(&self.cross_image));
+                    },
+                }
+                ui.add_sized([200.0, 500.0], egui::Label::new("Wins!"));
+            } else {
+                egui::Grid::new("GameTable").show(ui, |ui| {
                 
-                // This probably doesn't need to be a Vec. The idea wasto be able to process more than one event at once.
-                // It shouldn't be possible to play twice in one frame.
-                let mut cells_to_update: Vec<(usize, usize)> = Vec::new();
-
-                for (row, cells_in_row) in self.game_board.iter().enumerate() {
-
-                    for (column, _cell) in cells_in_row.iter().enumerate() {
-                        let image_of_celltype = match self.get_cell_at(column, row) {
-                            CellType::Empty  => egui::Image::clone(&self.empty_image),
-                            CellType::Circle => egui::Image::clone(&self.circle_image),
-                            CellType::Cross  => egui::Image::clone(&self.cross_image)
-                        };
-
-                        if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
-                            cells_to_update.push((row, column));
-                            println!("Cell row {} column {}", row, column)
+                    // This probably doesn't need to be a Vec. The idea wasto be able to process more than one event at once.
+                    // It shouldn't be possible to play twice in one frame.
+                    let mut cells_to_update: Vec<(usize, usize)> = Vec::new();
+    
+                    for (row, cells_in_row) in self.game_board.iter().enumerate() {
+    
+                        for (column, _cell) in cells_in_row.iter().enumerate() {
+                            let image_of_celltype = match self.get_cell_at(column, row) {
+                                CellType::Empty  => egui::Image::clone(&self.empty_image),
+                                CellType::Circle => egui::Image::clone(&self.circle_image),
+                                CellType::Cross  => egui::Image::clone(&self.cross_image)
+                            };
+    
+                            if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
+                                cells_to_update.push((row, column));
+                                println!("Cell row {} column {}", row, column)
+                            }
                         }
+                        ui.end_row();
                     }
-                    ui.end_row();
-                }
-
-                for cell in cells_to_update {
-                    let cell_to_use = if self.turn {CellType::Cross} else {CellType::Circle};
-                    self.turn = !self.turn;
-                    self.update_cell_at(cell.0, cell.1, cell_to_use);
-                }
-
-                let win_state = self.check_board_for_win();
-                if win_state.0 {
-                    match win_state.1 {
-                        CellType::Empty => todo!(),
-                        CellType::Circle => println!("Circle wins"),
-                        CellType::Cross => println!("Cross wins"),
+    
+                    for cell in cells_to_update {
+                        let cell_to_use = if self.turn {CellType::Cross} else {CellType::Circle};
+                        self.turn = !self.turn;
+                        self.update_cell_at(cell.0, cell.1, cell_to_use);
                     }
-                }
-
-            }); // </Grid>
+                }); // </Grid>
+            }
         }); // </CentralPanel>
     }
 }
