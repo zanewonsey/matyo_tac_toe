@@ -200,7 +200,7 @@ fn main() {
     let mut win_option = NativeOptions::default();
     win_option.centered = true;
     //win_option.window_builder = WindowBuilderHook::new();
-    let _ = eframe::run_native("zaneguitest",
+    let _ = eframe::run_native("matyo tac toe",
         win_option,
         Box::new(
             |app|
