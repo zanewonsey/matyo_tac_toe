@@ -167,11 +167,16 @@ impl App for Application<'_> {
                                 CellType::Circle => egui::Image::clone(&self.circle_image),
                                 CellType::Cross  => egui::Image::clone(&self.cross_image)
                             };
-    
-                            if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
-                                cells_to_update.push((row, column));
-                                println!("Cell row {} column {}", row, column)
+                            
+                            if self.get_cell_at(column, row) != CellType::Empty {
+                                ui.add_sized([180.0, 180.0],image_of_celltype);
+                            } else {
+                                if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
+                                    cells_to_update.push((row, column));
+                                    println!("Cell row {} column {}", row, column)
+                                }
                             }
+                            
                         }
                         ui.end_row();
                     }
