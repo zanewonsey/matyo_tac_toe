@@ -1,6 +1,5 @@
 use std::ops::Index;
-use eframe::{egui::CentralPanel, App, HardwareAcceleration, NativeOptions, Theme};
-use egui::viewport;
+use eframe::{egui::CentralPanel, App, HardwareAcceleration, Theme};
 
 #[derive(PartialEq)]
 enum CellType {
