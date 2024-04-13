@@ -1,5 +1,6 @@
 use std::ops::Index;
-use eframe::{egui::CentralPanel, App, NativeOptions};
+use eframe::{egui::CentralPanel, App, HardwareAcceleration, NativeOptions, Theme};
+use egui::viewport;
 
 #[derive(PartialEq)]
 enum CellType {
@@ -167,11 +168,16 @@ impl App for Application<'_> {
                                 CellType::Circle => egui::Image::clone(&self.circle_image),
                                 CellType::Cross  => egui::Image::clone(&self.cross_image)
                             };
-    
-                            if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
-                                cells_to_update.push((row, column));
-                                println!("Cell row {} column {}", row, column)
+                            
+                            if self.get_cell_at(column, row) != CellType::Empty {
+                                ui.add_sized([180.0, 180.0],image_of_celltype);
+                            } else {
+                                if ui.add_sized([180.0, 180.0],egui::widgets::ImageButton::new(image_of_celltype)).clicked() {
+                                    cells_to_update.push((row, column));
+                                    println!("Cell row {} column {}", row, column)
+                                }
                             }
+                            
                         }
                         ui.end_row();
                     }
@@ -188,15 +194,29 @@ impl App for Application<'_> {
 }
 
 fn main() {
-    
-    //let app = Application{
-    //    counter: 0
-    //};
-    let mut win_option = NativeOptions::default();
-    win_option.centered = true;
-    //win_option.window_builder = WindowBuilderHook::new();
-    let _ = eframe::run_native("zaneguitest",
-        win_option,
+    let vp = egui::ViewportBuilder::default()
+        .with_resizable(false);
+
+    let options = eframe::NativeOptions {
+        viewport: vp,
+        vsync: true,
+        multisampling: 0,
+        depth_buffer: 0,
+        stencil_buffer: 0,
+        hardware_acceleration: HardwareAcceleration::Preferred,
+        renderer: eframe::Renderer::Glow,
+        follow_system_theme: cfg!(target_os = "macos") || cfg!(target_os = "windows"),
+        default_theme: Theme::Dark,
+        run_and_return: true,
+        event_loop_builder: None,
+        window_builder: None,
+        shader_version: None,
+        centered: false,
+        persist_window: true,
+    };
+
+    let _ = eframe::run_native("matyo tac toe",
+    options,
         Box::new(
             |app|
             Box::new(Application::new(app)))
