@@ -1,5 +1,5 @@
 use std::ops::Index;
-use eframe::{egui::CentralPanel, App, NativeOptions};
+use eframe::{egui::CentralPanel, App, HardwareAcceleration, NativeOptions, Theme};
 use egui::viewport;
 
 #[derive(PartialEq)]
@@ -203,22 +203,17 @@ fn main() {
         multisampling: 0,
         depth_buffer: 0,
         stencil_buffer: 0,
-        hardware_acceleration: todo!(),
+        hardware_acceleration: HardwareAcceleration::Preferred,
         renderer: eframe::Renderer::Glow,
-        follow_system_theme: todo!(),
-        default_theme: todo!(),
-        run_and_return: todo!(),
-        event_loop_builder: todo!(),
-        window_builder: todo!(),
-        shader_version: todo!(),
-        centered: todo!(),
-        persist_window: todo!(),
+        follow_system_theme: cfg!(target_os = "macos") || cfg!(target_os = "windows"),
+        default_theme: Theme::Dark,
+        run_and_return: true,
+        event_loop_builder: None,
+        window_builder: None,
+        shader_version: None,
+        centered: false,
+        persist_window: true,
     };
-
-
-
-    //let options = eframe::NativeOptions::default();
-    //options.viewport.with_resizable(false);
 
     let _ = eframe::run_native("matyo tac toe",
     options,
