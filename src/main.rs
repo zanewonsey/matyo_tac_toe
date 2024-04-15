@@ -1,4 +1,5 @@
 use eframe::{egui::CentralPanel, App, HardwareAcceleration, Theme};
+use egui::Button;
 use tic_tac_toe::{CellType, TicTacToe};
 
 mod tic_tac_toe;
@@ -20,6 +21,33 @@ impl Application<'_> {
             game: TicTacToe::new(),
         }
     }
+
+    fn title_screen(&mut self, ctx: &egui::Context) {
+        CentralPanel::default().show(ctx, |ui| {
+
+            ui.style_mut().text_styles.insert(
+                egui::TextStyle::Button,
+                egui::FontId::new(24.0, eframe::epaint::FontFamily::Proportional),
+            );
+
+            if ui.add_sized([200.0, 50.0], egui::Button::new("Play match")).clicked() {
+
+            }
+
+            if ui.add_sized([200.0, 50.0], egui::Button::new("Exit Application")).clicked() {
+
+            }
+        });
+    }
+
+    fn game_screen() {
+
+    }
+
+    fn win_screen() {
+        
+    }
+
 }
 
 impl App for Application<'_> {
@@ -28,7 +56,9 @@ impl App for Application<'_> {
 
         egui_extras::install_image_loaders(ctx);
 
-        CentralPanel::default().show(ctx, |ui|{
+        self.title_screen(ctx);
+
+        /*CentralPanel::default().show(ctx, |ui|{
             if self.game.in_progress() {
                 let win_state = self.game.check_for_win();
                 if win_state.0 {
@@ -81,7 +111,7 @@ impl App for Application<'_> {
                 }
 
             }
-        }); // </CentralPanel>
+        }); // </CentralPanel>*/
     }
 }
 
