@@ -74,8 +74,8 @@ impl App for Application<'_> {
                         }
         
                         for cell in cells_to_update {
-                            self.game.turn = !self.game.turn;
                             self.game.play_cell(cell.0, cell.1);
+                            self.game.turn = !self.game.turn;
                         }
                     }); // </Grid>
                 }
