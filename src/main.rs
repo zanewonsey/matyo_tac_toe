@@ -74,7 +74,6 @@ impl App for Application<'_> {
                         }
         
                         for cell in cells_to_update {
-                            let cell_to_use = if self.game.turn {CellType::Cross} else {CellType::Circle};
                             self.game.turn = !self.game.turn;
                             self.game.play_cell(cell.0, cell.1);
                         }
